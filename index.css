@@ -1,0 +1,76 @@
+/* Base Resets */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+
+/* Wireframe stylings */
+
+.wireframebody {
+    width: 80vw;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 48px;
+    border-width: 3px;
+    border-bottom: black;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    width: 100%;
+    margin: 10px auto;
+}
+
+button {
+    width: 40%;
+    height: 100%;
+}
+
+.bookmark-container {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    border: 1px solid black;
+    background-color: grey;
+}
+
+.bookmark {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    border-bottom: 2px solid rgb(92, 92, 228);
+    align-items: center;
+    margin: 10px 0 20px 0;
+}
+
+.bookmark-text {
+    font-size: 24px;
+}
+
+.bookmark-bar-rating {
+    width: 20%;
+    background-color: darkgrey;
+    height: 20px;
+    border: 1px black solid;
+    border-radius: 5px;
+}
+
+h3 {
+    position: absolute;
+    font-size: 16px;
+    font-weight: 200;
+    padding: 0 5px;
+}
+
+.bookmark-bar-fill {
+    height: 20px;
+    background-color: rgb(110, 103, 161);
+}
