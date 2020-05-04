@@ -37,6 +37,7 @@ const deleteBookmark = function(id) {
 export default {
   getBookmarks,
   createBookmark,
-  updateBookmark
+  updateBookmark,
+  deleteBookmark
 };
 

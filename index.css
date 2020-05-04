@@ -44,7 +44,7 @@ button {
 
 .bookmark {
     display: flex;
-    flex-flow: row;
+    flex-flow: column;
     justify-content: space-between;
     border-bottom: 2px solid rgb(92, 92, 228);
     align-items: center;
@@ -52,7 +52,14 @@ button {
 }
 
 .bookmark-text {
+    width: 100%;
     font-size: 24px;
+}
+
+.bookmark-header {
+    display: flex;
+    flex-flow: row;
+    width: 100%;
 }
 
 .bookmark-bar-rating {
@@ -62,6 +69,13 @@ button {
     border: 1px black solid;
     border-radius: 5px;
 }
+
+.description-box {
+    width: 100%;
+    height: 50px;
+    background: white;
+}
+
 
 h3 {
     position: absolute;
