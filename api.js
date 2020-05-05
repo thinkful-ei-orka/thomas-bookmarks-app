@@ -30,7 +30,7 @@ const bookmarkApiFetch = function(...args) {
 };
 
 const getBookmarks = function() {
-  return fetch(`${BASE_URL}/bookmarks`);
+  return bookmarkApiFetch(`${BASE_URL}/bookmarks`);
 };
 
 const createBookmark = function(bookmark) {
