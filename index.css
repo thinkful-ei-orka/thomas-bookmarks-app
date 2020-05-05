@@ -12,6 +12,8 @@
 
 body {
     background-color: rgb(190, 202, 233);
+    overflow-y: scroll;
+    scrollbar-width: thin;
 }
 
 li {
@@ -21,6 +23,7 @@ li {
 legend {
     text-align: center;
     font-size: 48px;
+    padding: 0 10px;
     margin: 10px auto;
     max-width: 90%;
 }
@@ -31,82 +34,100 @@ fieldset {
     max-width: 90%;
 }
 
+select {
+    padding: 3px;
+    margin: 5px;
+}
+
+label {
+    margin: 5px;
+}
+
 /* Button Setups */
 
 button {
     background: none;
+    width: 35%;
     border: 1px white solid;
     border-radius: 5px;
     padding: 5px;
-}
-
-.js-bookmark-new, .js-bookmark-add {
-    background-color: rgb(167, 238, 167);
-}
-
-.js-bookmark-cancel {
-    background-color: rgb(235, 137, 137);
-}
-
-/* Wireframe stylings */
-
-.wireframebody {
-    width: 80vw;
-    margin: 0 auto;
-}
-
-h1 {
-    font-size: 48px;
-    border-width: 3px;
-    border-bottom: black;
+    margin: 5px;
 }
 
 .button-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     height: 50px;
     width: 100%;
     margin: 10px auto;
 }
 
-button {
-    width: 40%;
-    height: 100%;
+.js-bookmark-new, .js-bookmark-add, .js-bookmark-edit {
+    background-color: rgb(167, 238, 167);
+}
+
+.js-bookmark-cancel, .js-bookmark-delete {
+    background-color: rgb(235, 137, 137);
+}
+
+/* Bookmark Styling */
+
+.bookmark-bar label{
+    text-align: right;
 }
 
 .bookmark-container {
     width: 100%;
-    display: flex;
-    flex-flow: column;
+    margin: 10px auto;
+    display: block;
     border: 1px solid black;
-    background-color: grey;
+    background-color: rgb(177, 177, 177);
 }
 
-.bookmark {
+.js-bookmark-element {
+    border: 1px solid black;
+}
+
+.bookmark-bar {
     display: flex;
-    flex-flow: column;
-    justify-content: space-between;
-    border-bottom: 2px solid rgb(92, 92, 228);
+    flex-flow: row;
     align-items: center;
-    margin: 10px 0 20px 0;
 }
 
-.bookmark-text {
-    width: 100%;
+.bookmark-bar-title {
+    width: 70%;
+    margin: 5px;
     font-size: 24px;
 }
 
-.bookmark-header {
-    display: flex;
-    flex-flow: row;
-    width: 100%;
+.bookmark-rating-title {
+    position: absolute;
+    padding: 0px 5px;
+    z-index: 1;
 }
 
 .bookmark-bar-rating {
-    width: 20%;
-    background-color: darkgrey;
+    width: 40%;
+    margin: 0px 5px;
+    background-color: rgb(236, 236, 236);
     height: 20px;
     border: 1px black solid;
+    border-radius: 5px;
+}
+
+.bookmark-bar-fill {
+    position: relative;
+    height: 20px;
+    background-color: rgb(223, 205, 231);
+}
+
+/* Bookmark Examine Styling */
+
+.bookmark-desc {
+    background-color: white;
+    padding: 10px 5px;
+    margin: 0 10px;
+    border: 1px inset;
     border-radius: 5px;
 }
 
@@ -116,15 +137,39 @@ button {
     background: white;
 }
 
+/* Add/Edit Bookmark Stylings */
 
-h3 {
-    position: absolute;
-    font-size: 16px;
-    font-weight: 200;
-    padding: 0 5px;
+.bookmark-name-box, .bookmark-url-box {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px auto;
 }
 
-.bookmark-bar-fill {
-    height: 20px;
-    background-color: rgb(110, 103, 161);
+input {
+    width: 80%;
+    height: 1.4rem;
+    padding: 5px;
+}
+
+.bookmark-desc-box {
+    margin: 20px auto;
+}
+
+#bookmark-desc-entry {
+    width: 100%;
+    padding: 10px;
+}
+
+/* Error styling */
+
+#js-error-message {
+    display: block;
+    margin: 10px auto;
+    padding: 5px 0;
+    text-align: center;
+    color: white;
+    background-color: rgb(206, 46, 46);
+    border-radius: 10px;
 }

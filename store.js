@@ -15,6 +15,7 @@ let editFlag = false;
 let ratingsFilter = 1;
 let objectEdit = {};
 let examineId = undefined;
+let errorMessage = '';
 
 const findById = function (id) {
   return this.bookmarks.find(bookmark => bookmark.id === id);
@@ -37,6 +38,21 @@ const findAndDelete = function (id) {
   this.bookmarks = this.bookmarks.filter(bookmark => bookmark.id !== id);
 };
 
+const clearErrorMessage = function () {
+  this.errorMessage = '';
+};
+
+const setErrorMessage = function (message) {
+  this.errorMessage = message;
+};
+
+const getErrorMessage = function () {
+  if (this.errorMessage) {
+    return `<div id="js-error-message">${this.errorMessage}</div>`;
+  }
+  return '';
+};
+
 export default {
   bookmarks,
   ratingsFilter,
@@ -47,4 +63,7 @@ export default {
   addBookmark,
   findAndUpdate,
   findAndDelete,
+  clearErrorMessage,
+  setErrorMessage,
+  getErrorMessage
 };

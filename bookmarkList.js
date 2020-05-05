@@ -11,7 +11,7 @@ const generateBookmarkElement = function (bookmark) {
 
   if (bookmark.id === store.idExamine) {
     bookmarkExamine = `
-        <div class='bookmark-examine-box>
+        <div class='bookmark-examine-box'>
             <p class='bookmark-desc'>${bookmark.desc}</p>
             <div class='button-container'>
                 <button class='js-bookmark-edit'>Edit</button>
@@ -23,38 +23,50 @@ const generateBookmarkElement = function (bookmark) {
 
   return `
     <li class="js-bookmark-element" data-bookmark-id="${bookmark.id}">
-      ${bookmark.title}
-        <div class="bookmark-bar-rating">
-            <h3>Rating: ${bookmark.rating}</h3>
-            <div class="bookmark-bar-fill" style="width: 100%"></div>
+        <div class="bookmark-bar">
+            <h3 class="bookmark-bar-title">${bookmark.title}</h3>
+            <div class="bookmark-bar-rating">
+                <h4 class="bookmark-rating-title">Rating: ${bookmark.rating}</h4>
+                <div class="bookmark-bar-fill" style="width: ${bookmark.rating * 20}%"></div>
+            </div>
         </div>
         ${bookmarkExamine}
     </li>`;
 };
 
-const generateBookmarkForm = function () {
+const generateBookmarkForm = function (bookmarks) {
   let filter = generateRatingsMenu(store.ratingsFilter);
+  let list = '';
+  let error = store.getErrorMessage();
+  if (bookmarks) {
+    list = bookmarks;
+  }
+
   return `
-    <span id="#js-error-message"></span>
+    ${error}
     <form id="js-bookmark-form">
     <fieldset>
-        <legend>Test</legend>
+        <legend>lilac</legend>
+        <div class="bookmark-bar">
         <button class="js-bookmark-new">Add a Bookmark</button>
-        <label>Minimum Rating: </label>
+        <label for="filterList">Minimum Rating: </label>
         <select id="filterList">
             ${filter}
         </select>
-        <div class="bookmark-container" id="js-bookmark-list">
         </div>
-    <fieldset>
+        <div class="bookmark-container" id="js-bookmark-list">
+            ${list}
+        </div>
+    </fieldset>
     </form>
   `;
 };
 
 const generateRatingsMenu = function (rating) {
   let ratingHtml = '';
+  let ratingNumber = parseInt(rating);
   for (let i = 1; i < 6; i++) {
-    if (rating === i) {
+    if (ratingNumber === i) {
       ratingHtml += `<option value="${i}" selected>${i}</option>`;
     } else {
       ratingHtml += `<option value="${i}">${i}</option>`;
@@ -69,41 +81,49 @@ const generateNewBookmark = function () {
   let bookmarkUrl = '';
   let bookmarkDesc = '';
   let bookmarkRating = 3;
+  let bookmarkLegend = 'Add a Bookmark';
+  let bookmarkEdit = '<button type="submit" class="js-bookmark-add">Submit</button>';
+  let error = store.getErrorMessage();
 
-  if (store.objectEdit === {}) {
+  if (store.objectEdit) {
     bookmarkTitle = store.objectEdit.title;
     bookmarkUrl = store.objectEdit.url;
     bookmarkDesc = store.objectEdit.desc;
     bookmarkRating = store.objectEdit.rating;
+    bookmarkLegend = 'Edit a Bookmark';
+    bookmarkEdit = '<button type="submit" class="js-bookmark-edit">Submit</button>';
   }
 
   let ratingHtml = generateRatingsMenu(bookmarkRating);
 
 
   return `
-        <span id="#js-error-message"></span>
+        ${error}
         <form class="js-bookmark-form">
         <fieldset>
-        <legend>Add a Bookmark</legend>
+        <legend>${bookmarkLegend}</legend>
+            <div class="bookmark-name-box">
             <label for="name">Name:</label>
-            <input required type="text" name="name" id="bookmark-name" value="${bookmarkTitle}"></input>
-            <br/>
+            <input type="text" name="name" id="bookmark-name" value="${bookmarkTitle}"></input>
+            </div>
 
+            <div class="bookmark-url-box">
             <label for="url">URL:</label>
             <input required type="url" name="url" id="bookmark-url" value="${bookmarkUrl}"></input>
-            <br/>
+            </div>
             
             <label>Rating: </label>
             <select id="bookmark-rating">
                 ${ratingHtml}
             </select>
-            <br/>
 
+            <div class="bookmark-desc-box">
             <label for="desc">Bookmark Description: </label>
-            <input required type="text" name="desc" id="bookmark-desc" value="${bookmarkDesc}"></input>
+            <textarea required rows="10" name="desc" id="bookmark-desc-entry">${bookmarkDesc}</textarea>
+            </div>
 
             <div class="button-container">
-                <button type="submit" class="js-bookmark-add">Submit</button>
+                ${bookmarkEdit}
                 <button class="js-bookmark-cancel" formnovalidate>Cancel</button>
             </div>
         </fieldset>
@@ -126,8 +146,8 @@ const render = function () {
   if (store.editFlag) {
     htmlString = generateNewBookmark();
   } else {
-    htmlString = generateBookmarkForm();
-    htmlString += generateBookmarkString(bookmarkList);
+    htmlString = generateBookmarkString(bookmarkList);
+    htmlString = generateBookmarkForm(htmlString);
   }
 
 
@@ -138,52 +158,59 @@ const render = function () {
 const handleNewBookmarkSubmit = function () {
   $('#js-bookmark-form').submit('.js-bookmark-add', function (event) {
     event.preventDefault();
-    const newBookmarkName = $('#bookmark-name').val();
-    const newBookmarkUrl = $('#bookmark-url').val();
-    const newBookmarkDesc = $('#bookmark-desc').val();
-    const newBookmarkRating = $('#bookmark-rating').val();
+    let newBookmark = getBookmarkFromElements();
 
-    let newBookmark = {
-      title: newBookmarkName,
-      url: newBookmarkUrl,
-      desc: newBookmarkDesc,
-      rating: newBookmarkRating
-    };
+    api.createBookmark(newBookmark)
+      .then(bookmarkData => {
+        store.addBookmark(bookmarkData);
+        store.clearErrorMessage();
+        store.toggleEdit();
+        render();
+      })
+      .catch(error => {
+        store.setErrorMessage(error.message);
+        render();
+      });
     
-    if(store.objectEdit === {}) {
-      api.updateBookmark(store.objectEdit.id, newBookmark)
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error(response.json());
-        })
-        .then(bookmarkData => {
-          store.findAndUpdate(store.objectEdit.id, newBookmark);
-          store.toggleEdit();
-          render();            
-        })
-        .catch(error => {
-          $('#js-error-message').text(`Something went wrong: ${error.message}`);
-        });
-    } else {
-      api.createBookmark(newBookmark)
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error(response.json());
-        })
-        .then(bookmarkData => {
-          store.addBookmark(bookmarkData);
-          store.toggleEdit();
-          render();
-        })
-        .catch(error => {
-          $('#js-error-message').text(`Something went wrong: ${error.message}`);
-        });
-    }
   });
+};
+
+
+
+const handleEditBookmarkSubmit = function () {
+  $('#js-bookmark-form').submit('.js-bookmark-edit', function (event) {
+    event.preventDefault();
+    let editBookmark = getBookmarkFromElements();
+
+    api.updateBookmark(store.objectEdit.id, editBookmark)
+      .then(bookmarkData => {
+        store.findAndUpdate(store.objectEdit.id, editBookmark);
+        store.clearErrorMessage();
+        store.toggleEdit();
+        render();            
+      })
+      .catch(error => {
+        store.setErrorMessage(error.message);
+        render();
+      });
+  });
+};
+
+
+const getBookmarkFromElements = function () {
+  const newBookmarkName = $('#bookmark-name').val();
+  const newBookmarkUrl = $('#bookmark-url').val();
+  const newBookmarkDesc = $('#bookmark-desc-entry').val();
+  const newBookmarkRating = $('#bookmark-rating').val();
+
+  let newBookmark = {
+    title: newBookmarkName,
+    url: newBookmarkUrl,
+    desc: newBookmarkDesc,
+    rating: newBookmarkRating
+  };
+
+  return newBookmark;
 };
 
 const getBookmarkIdFromElement = function (bookmark) {
@@ -193,25 +220,18 @@ const getBookmarkIdFromElement = function (bookmark) {
 };
 
 const handleDeleteBookmark = function () {
-  // like in `handleItemCheckClicked`, we use event delegation
   $('#js-bookmark-form').on('click', '.js-bookmark-delete', event => {
     event.preventDefault();
-    // get the index of the item in store.items
     const id = getBookmarkIdFromElement(event.currentTarget);
-    // delete the item
     api.deleteBookmark(id)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error(response.json());
-      })
       .then(data => {
+        store.clearErrorMessage();
         store.findAndDelete(id);
         render();
       })
       .catch(error => {
-        $('#js-error-message').text(`Something went wrong: ${error.message}`);
+        store.setErrorMessage(error.message);
+        render();
       });
   });
 };
@@ -232,7 +252,7 @@ const handleBookmarkEditClicked = function () {
 
 const handleNewBookmarkClicked = function () {
   $('#js-bookmark-form').on('click', '.js-bookmark-new', event => {
-    store.objectEdit = {};
+    delete store.objectEdit;
     store.toggleEdit();
     render();
   });
@@ -240,6 +260,7 @@ const handleNewBookmarkClicked = function () {
 
 const handleNewBookmarkCancelClicked = function () {
   $('#js-bookmark-form').on('click', '.js-bookmark-cancel', event => {
+    store.clearErrorMessage();
     store.toggleEdit();
     render();
   });
@@ -260,6 +281,7 @@ const bindEventListeners = function () {
   handleBookmarkEditClicked();
   handleNewBookmarkClicked();
   handleNewBookmarkCancelClicked();
+  handleEditBookmarkSubmit();
 };
 
 export default {
