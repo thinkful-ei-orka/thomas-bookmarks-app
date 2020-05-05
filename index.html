@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wireframe Setup</title>
+    <script
+    src="https://code.jquery.com/jquery-3.5.1.js"
+    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="index.css">
+    <title>Bookmark App</title>
 </head>
 <body>
-    <form>
+    <form id="js-bookmark-form">
         <legend>Form Options</legend>
-        <button class="js-new-bookmark">Add a Bookmark</button>
+        <button class="js-bookmark-new">Add a Bookmark</button>
         <label>Filter by Rating</label>
         <select id="filterList">
             <option value="1">1</option> 
@@ -17,9 +22,10 @@
             <option value="4">4</option> 
             <option value="5">5</option> 
         </select>
-        <div class="bookmark-container">
-            
+        <div class="bookmark-container" id="js-bookmark-list">
+
         </div>
     </form>
+    <script type="module" src="index.js"></script>
 </body>
 </html>

@@ -8,6 +8,46 @@
 }
 
 
+/* Base Stylings */
+
+body {
+    background-color: rgb(190, 202, 233);
+}
+
+li {
+    list-style: none;
+}
+
+legend {
+    text-align: center;
+    font-size: 48px;
+    margin: 10px auto;
+    max-width: 90%;
+}
+
+fieldset {
+    padding: 10px;
+    margin: 0 auto;
+    max-width: 90%;
+}
+
+/* Button Setups */
+
+button {
+    background: none;
+    border: 1px white solid;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.js-bookmark-new, .js-bookmark-add {
+    background-color: rgb(167, 238, 167);
+}
+
+.js-bookmark-cancel {
+    background-color: rgb(235, 137, 137);
+}
+
 /* Wireframe stylings */
 
 .wireframebody {

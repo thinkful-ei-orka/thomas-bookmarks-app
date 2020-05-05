@@ -11,11 +11,11 @@ const getBookmarks = function() {
 };
 
 const createBookmark = function(bookmark) {
-  let newBookmark = JSON.stringify( { bookmark } );
+  let newBookmark = JSON.stringify(bookmark);
   return fetch(`${BASE_URL}/bookmarks`,
-    {method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: newBookmark  });
+    { method: 'POST',
+      headers: {'Content-Type' : 'application/json'},
+      body: newBookmark});
 };
 
 const updateBookmark = function(id, updateData) {

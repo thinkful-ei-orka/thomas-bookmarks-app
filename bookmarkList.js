@@ -1,66 +1,189 @@
-import store from './store';
-import api from './api';
+import store from './store.js';
+import api from './api.js';
 
 
 /**
  * 
  * @param {*} item 
  */
-const generateItemElement = function (bookmark) {
-  let bookmarkTitle = `<span class="shopping-item shopping-item__checked">${bookmark.name}</span>`;
-  if (!bookmark.checked) {
-    itemTitle = `
-      <form class="js-edit-item">
-        <input class="shopping-item" type="text" value="${bookmark.name}" />
-      </form>
-    `;
+const generateBookmarkElement = function (bookmark) {
+  let bookmarkExamine = '';
+
+  if (bookmark.id === store.idExamine) {
+    bookmarkExamine = `
+        <div class='bookmark-examine-box>
+            <p class='bookmark-desc'>${bookmark.desc}</p>
+            <div class='button-container'>
+                <button class='js-bookmark-edit'>Edit</button>
+                <button class='js-bookmark-delete'>Delete</button>
+            </div>
+        </div>
+      `;
   }
 
   return `
     <li class="js-bookmark-element" data-bookmark-id="${bookmark.id}">
-      ${bookmarkTitle}
-      <div class="shopping-item-controls">
-        <button class="shopping-item-toggle js-item-toggle">
-          <span class="button-label">check</span>
-        </button>
-        <button class="shopping-item-delete js-item-delete">
-          <span class="button-label">delete</span>
-        </button>
-      </div>
+      ${bookmark.title}
+        <div class="bookmark-bar-rating">
+            <h3>Rating: ${bookmark.rating}</h3>
+            <div class="bookmark-bar-fill" style="width: 100%"></div>
+        </div>
+        ${bookmarkExamine}
     </li>`;
 };
 
-const generateShoppingItemsString = function (shoppingList) {
-  const items = shoppingList.map((item) => generateItemElement(item));
-  return items.join('');
+const generateBookmarkForm = function () {
+  let filter = generateRatingsMenu(store.ratingsFilter);
+  return `
+    <span id="#js-error-message"></span>
+    <form id="js-bookmark-form">
+    <fieldset>
+        <legend>Test</legend>
+        <button class="js-bookmark-new">Add a Bookmark</button>
+        <label>Minimum Rating: </label>
+        <select id="filterList">
+            ${filter}
+        </select>
+        <div class="bookmark-container" id="js-bookmark-list">
+        </div>
+    <fieldset>
+    </form>
+  `;
+};
+
+const generateRatingsMenu = function (rating) {
+  let ratingHtml = '';
+  for (let i = 1; i < 6; i++) {
+    if (rating === i) {
+      ratingHtml += `<option value="${i}" selected>${i}</option>`;
+    } else {
+      ratingHtml += `<option value="${i}">${i}</option>`;
+    }
+  }
+  return ratingHtml;
+};
+
+
+const generateNewBookmark = function () {
+  let bookmarkTitle = '';
+  let bookmarkUrl = '';
+  let bookmarkDesc = '';
+  let bookmarkRating = 3;
+
+  if (store.objectEdit === {}) {
+    bookmarkTitle = store.objectEdit.title;
+    bookmarkUrl = store.objectEdit.url;
+    bookmarkDesc = store.objectEdit.desc;
+    bookmarkRating = store.objectEdit.rating;
+  }
+
+  let ratingHtml = generateRatingsMenu(bookmarkRating);
+
+
+  return `
+        <span id="#js-error-message"></span>
+        <form class="js-bookmark-form">
+        <fieldset>
+        <legend>Add a Bookmark</legend>
+            <label for="name">Name:</label>
+            <input required type="text" name="name" id="bookmark-name" value="${bookmarkTitle}"></input>
+            <br/>
+
+            <label for="url">URL:</label>
+            <input required type="url" name="url" id="bookmark-url" value="${bookmarkUrl}"></input>
+            <br/>
+            
+            <label>Rating: </label>
+            <select id="bookmark-rating">
+                ${ratingHtml}
+            </select>
+            <br/>
+
+            <label for="desc">Bookmark Description: </label>
+            <input required type="text" name="desc" id="bookmark-desc" value="${bookmarkDesc}"></input>
+
+            <div class="button-container">
+                <button type="submit" class="js-bookmark-add">Submit</button>
+                <button class="js-bookmark-cancel" formnovalidate>Cancel</button>
+            </div>
+        </fieldset>
+        </form>
+  `;
+};
+
+const generateBookmarkString = function (bookmarkList) {
+  const list = bookmarkList.map((bookmark) => generateBookmarkElement(bookmark));
+  return list.join('');
 };
 
 const render = function () {
-  // Filter item list if store prop is true by item.checked === false
-  let bookmarks = [...store.bookmark];
-  if (store.hideCheckedItems) {
-    items = items.filter(item => !item.checked);
+  // Filter item list based upon store's rating filter
+  let bookmarkList = [...store.bookmarks];
+  bookmarkList = bookmarkList.filter(bookmark => bookmark.rating >= store.ratingsFilter);
+
+  let htmlString = '';
+
+  if (store.editFlag) {
+    htmlString = generateNewBookmark();
+  } else {
+    htmlString = generateBookmarkForm();
+    htmlString += generateBookmarkString(bookmarkList);
   }
 
-  // render the shopping list in the DOM
-  const shoppingListItemsString = generateShoppingItemsString(items);
 
   // insert that HTML into the DOM
-  $('.js-shopping-list').html(shoppingListItemsString);
+  $('#js-bookmark-form').html(htmlString);
 };
 
-const handleNewItemSubmit = function () {
-    $('#js-shopping-list-form').submit(function (event) {
+const handleNewBookmarkSubmit = function () {
+  $('#js-bookmark-form').submit('.js-bookmark-add', function (event) {
     event.preventDefault();
-    const newItemName = $('.js-shopping-list-entry').val();
-    $('.js-shopping-list-entry').val('');
-    api.createBookmark(newBookmark)
-        .then(res => res.json())
-        .then((data) => {
-            store.addItem(data);
-            render();
+    const newBookmarkName = $('#bookmark-name').val();
+    const newBookmarkUrl = $('#bookmark-url').val();
+    const newBookmarkDesc = $('#bookmark-desc').val();
+    const newBookmarkRating = $('#bookmark-rating').val();
+
+    let newBookmark = {
+      title: newBookmarkName,
+      url: newBookmarkUrl,
+      desc: newBookmarkDesc,
+      rating: newBookmarkRating
+    };
+    
+    if(store.objectEdit === {}) {
+      api.updateBookmark(store.objectEdit.id, newBookmark)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response.json());
+        })
+        .then(bookmarkData => {
+          store.findAndUpdate(store.objectEdit.id, newBookmark);
+          store.toggleEdit();
+          render();            
+        })
+        .catch(error => {
+          $('#js-error-message').text(`Something went wrong: ${error.message}`);
         });
-    });
+    } else {
+      api.createBookmark(newBookmark)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response.json());
+        })
+        .then(bookmarkData => {
+          store.addBookmark(bookmarkData);
+          store.toggleEdit();
+          render();
+        })
+        .catch(error => {
+          $('#js-error-message').text(`Something went wrong: ${error.message}`);
+        });
+    }
+  });
 };
 
 const getBookmarkIdFromElement = function (bookmark) {
@@ -69,54 +192,76 @@ const getBookmarkIdFromElement = function (bookmark) {
     .data('bookmark-id');
 };
 
-const handleDeleteItemClicked = function () {
+const handleDeleteBookmark = function () {
   // like in `handleItemCheckClicked`, we use event delegation
-  $('.js-shopping-list').on('click', '.js-item-delete', event => {
-    // get the index of the item in store.items
-    const id = getItemIdFromElement(event.currentTarget);
-    // delete the item
-    store.findAndDelete(id);
-    // render the updated shopping list
-    render();
-  });
-};
-
-const handleEditShoppingItemSubmit = function () {
-  $('.js-shopping-list').on('submit', '.js-edit-item', event => {
+  $('#js-bookmark-form').on('click', '.js-bookmark-delete', event => {
     event.preventDefault();
-    const id = getItemIdFromElement(event.currentTarget);
-    const itemName = $(event.currentTarget).find('.shopping-item').val();
-    api.updateItem(id, itemName)
-    .then(res => res.json())
-    .then(data) => {
-      store.findAndUpdate(id, itemName);
-      render();
-    };
+    // get the index of the item in store.items
+    const id = getBookmarkIdFromElement(event.currentTarget);
+    // delete the item
+    api.deleteBookmark(id)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error(response.json());
+      })
+      .then(data => {
+        store.findAndDelete(id);
+        render();
+      })
+      .catch(error => {
+        $('#js-error-message').text(`Something went wrong: ${error.message}`);
+      });
   });
 };
 
-const handleItemCheckClicked = function () {
-  $('.js-shopping-list').on('click', '.js-item-toggle', event => {
-    const id = getItemIdFromElement(event.currentTarget);
+const handleBookmarkExamineClicked = function () {
+  $('#js-bookmark-form').on('click', '.js-bookmark-element', event => {
+    store.idExamine = getBookmarkIdFromElement(event.currentTarget);
     render();
   });
 };
 
-const handleToggleFilterClick = function () {
-  $('.js-filter-checked').click(() => {
-    store.toggleCheckedFilter();
+const handleBookmarkEditClicked = function () {
+  $('#js-bookmark-form').on('click', '.js-bookmark-edit', event => {
+    store.objectEdit = store.findById(store.idExamine);
+    store.toggleEdit();
+  });
+};
+
+const handleNewBookmarkClicked = function () {
+  $('#js-bookmark-form').on('click', '.js-bookmark-new', event => {
+    store.objectEdit = {};
+    store.toggleEdit();
+    render();
+  });
+};
+
+const handleNewBookmarkCancelClicked = function () {
+  $('#js-bookmark-form').on('click', '.js-bookmark-cancel', event => {
+    store.toggleEdit();
+    render();
+  });
+};
+
+const handleRatingFilterSelect = function () {
+  $('#js-bookmark-form').on('change','#filterList', event => {
+    store.ratingsFilter = $(event.currentTarget).val();
     render();
   });
 };
 
 const bindEventListeners = function () {
-  handleNewItemSubmit();
-  handleItemCheckClicked();
-  handleDeleteItemClicked();
-  handleEditShoppingItemSubmit();
-  handleToggleFilterClick();
+  handleRatingFilterSelect();
+  handleBookmarkExamineClicked();
+  handleNewBookmarkSubmit();
+  handleDeleteBookmark();
+  handleBookmarkEditClicked();
+  handleNewBookmarkClicked();
+  handleNewBookmarkCancelClicked();
 };
-// This object contains the only exposed methods from this module:
+
 export default {
   render,
   bindEventListeners

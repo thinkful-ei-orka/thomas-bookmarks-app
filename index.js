@@ -1,13 +1,13 @@
-import api from './api';
-import bookmarkList from './bookmarkList';
-import store from './store';
+import api from './api.js';
+import bookmarkList from './bookmarkList.js';
+import store from './store.js';
 
 
 const main = function () {
-  api.getItems()
+  api.getBookmarks()
     .then(res => res.json())
-    .then((bookmarks) => {
-      bookmarks.forEach((bookmark) => store.addItem(bookmark));
+    .then(bookmarks => {
+      bookmarks.forEach(bookmark => store.addBookmark(bookmark));
       bookmarkList.render();
     });
   
