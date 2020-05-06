@@ -107,12 +107,12 @@ const generateNewBookmark = function () {
         <legend>${bookmarkLegend}</legend>
             <div class="bookmark-name-box">
             <label for="name">Name:</label>
-            <input required type="text" name="name" id="bookmark-name" value="${bookmarkTitle}"></input>
+            <input required placeholder="Example" type="text" name="name" id="bookmark-name" value="${bookmarkTitle}"></input>
             </div>
 
             <div class="bookmark-url-box">
             <label for="url">URL:</label>
-            <input required type="url" name="url" id="bookmark-url" value="${bookmarkUrl}"></input>
+            <input required placeholder="http://www.example.com" type="url" name="url" id="bookmark-url" value="${bookmarkUrl}"></input>
             </div>
             
             <label>Rating: </label>
