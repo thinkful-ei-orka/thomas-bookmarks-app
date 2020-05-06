@@ -14,7 +14,7 @@ const generateBookmarkElement = function (bookmark) {
         <div class='bookmark-examine-box'>
             <p class='bookmark-desc'>${bookmark.desc}</p>
             <div class='button-container'>
-                <a href="${bookmark.url}" class='js-bookmark-visit button'>Visit</a>
+                <a href="${bookmark.url}" target="_blank" class='js-bookmark-visit button'>Visit</a>
                 <button class='js-bookmark-edit'>Edit</button>
                 <button class='js-bookmark-delete'>Delete</button>
             </div>
@@ -240,7 +240,12 @@ const handleDeleteBookmark = function () {
 
 const handleBookmarkExamineClicked = function () {
   $('#js-bookmark-form').on('click', '.js-bookmark-element', event => {
-    store.idExamine = getBookmarkIdFromElement(event.currentTarget);
+    let idCheck = getBookmarkIdFromElement(event.currentTarget);
+    if (idCheck === store.idExamine) {
+      store.idExamine = null;
+    } else {
+      store.idExamine = idCheck;
+    }
     render();
   });
 };
