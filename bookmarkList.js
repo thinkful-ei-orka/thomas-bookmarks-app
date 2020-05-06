@@ -14,6 +14,7 @@ const generateBookmarkElement = function (bookmark) {
         <div class='bookmark-examine-box'>
             <p class='bookmark-desc'>${bookmark.desc}</p>
             <div class='button-container'>
+                <a href="${bookmark.url}" class='js-bookmark-visit button'>Visit</a>
                 <button class='js-bookmark-edit'>Edit</button>
                 <button class='js-bookmark-delete'>Delete</button>
             </div>
@@ -106,7 +107,7 @@ const generateNewBookmark = function () {
         <legend>${bookmarkLegend}</legend>
             <div class="bookmark-name-box">
             <label for="name">Name:</label>
-            <input type="text" name="name" id="bookmark-name" value="${bookmarkTitle}"></input>
+            <input required type="text" name="name" id="bookmark-name" value="${bookmarkTitle}"></input>
             </div>
 
             <div class="bookmark-url-box">

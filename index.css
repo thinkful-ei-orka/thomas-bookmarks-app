@@ -18,6 +18,21 @@ body {
     background-color: rgb(195, 201, 231);
 }
 
+a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: none;
+    width: 35%;
+    height: 90%;
+    border: 1px white solid;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    font-size: 1rem;  
+}
+
 li {
     list-style: none;
 }
@@ -76,7 +91,9 @@ button {
     margin: 10px auto;
 }
 
-.js-bookmark-new, .js-bookmark-add, .js-bookmark-edit, .js-bookmark-edit-submit {
+.js-bookmark-new, .js-bookmark-add,
+.js-bookmark-edit, .js-bookmark-edit-submit,
+.js-bookmark-visit {
     background-color: rgb(205, 245, 252);
 }
 
