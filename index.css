@@ -52,6 +52,7 @@ label {
 textarea {
     font-family: 'Quicksand', sans-serif;
     font-size: 1.2rem;
+    line-height: 1.6rem;
 }
 
 /* Button Setups */
@@ -155,7 +156,7 @@ button {
 
 .bookmark-desc {
     background-color: white;
-    padding: 10px 5px;
+    padding: 10px;
     margin: 0 10px;
     border: 1px inset;
     border-radius: 5px;
@@ -179,8 +180,10 @@ button {
 
 input {
     width: 80%;
-    height: 1.4rem;
+    height: 1.6rem;
     padding: 5px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.2rem;
 }
 
 .bookmark-desc-box {
