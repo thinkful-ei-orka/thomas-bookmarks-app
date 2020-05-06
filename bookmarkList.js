@@ -23,7 +23,7 @@ const generateBookmarkElement = function (bookmark) {
   }
 
   return `
-    <li class="js-bookmark-element" data-bookmark-id="${bookmark.id}">
+    <li tabindex="0" class="js-bookmark-element" data-bookmark-id="${bookmark.id}">
         <div class="bookmark-bar">
             <h3 class="bookmark-bar-title">${bookmark.title}</h3>
             <div class="bookmark-bar-rating">
@@ -281,7 +281,23 @@ const handleRatingFilterSelect = function () {
   });
 };
 
+const handleKeyPress = function () {
+  $('#js-bookmark-form').on('keypress', '.js-bookmark-element', event => {
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode === 13) {
+      let idCheck = getBookmarkIdFromElement(event.currentTarget);
+      if (idCheck === store.idExamine) {
+        store.idExamine = null;
+      } else {
+        store.idExamine = idCheck;
+      }
+      render();
+    }
+  });
+};
+
 const bindEventListeners = function () {
+  handleKeyPress();
   handleRatingFilterSelect();
   handleBookmarkExamineClicked();
   handleNewBookmarkSubmit();
