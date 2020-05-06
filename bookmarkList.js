@@ -23,7 +23,7 @@ const generateBookmarkElement = function (bookmark) {
   }
 
   return `
-    <li tabindex="0" class="js-bookmark-element" data-bookmark-id="${bookmark.id}">
+    <div tabindex="0" class="js-bookmark-element" data-bookmark-id="${bookmark.id}">
         <div class="bookmark-bar">
             <h3 class="bookmark-bar-title">${bookmark.title}</h3>
             <div class="bookmark-bar-rating">
@@ -32,7 +32,7 @@ const generateBookmarkElement = function (bookmark) {
             </div>
         </div>
         ${bookmarkExamine}
-    </li>`;
+    </div>`;
 };
 
 const generateBookmarkForm = function (bookmarks) {
@@ -106,22 +106,22 @@ const generateNewBookmark = function () {
         <fieldset>
         <legend>${bookmarkLegend}</legend>
             <div class="bookmark-name-box">
-            <label for="name">Name:</label>
+            <label for="bookmark-name">Name:</label>
             <input required placeholder="Example" type="text" name="name" id="bookmark-name" value="${bookmarkTitle}"></input>
             </div>
 
             <div class="bookmark-url-box">
-            <label for="url">URL:</label>
+            <label for="bookmark-url">URL:</label>
             <input required placeholder="http://www.example.com" type="url" name="url" id="bookmark-url" value="${bookmarkUrl}"></input>
             </div>
             
-            <label>Rating: </label>
+            <label for="bookmark-rating">Rating: </label>
             <select id="bookmark-rating">
                 ${ratingHtml}
             </select>
 
             <div class="bookmark-desc-box">
-            <label for="desc">Bookmark Description: </label>
+            <label for="bookmark-desc-entry">Bookmark Description: </label>
             <textarea required rows="10" name="desc" id="bookmark-desc-entry">${bookmarkDesc}</textarea>
             </div>
 
