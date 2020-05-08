@@ -23,7 +23,7 @@ const generateBookmarkElement = function (bookmark) {
   }
 
   return `
-    <div tabindex="0" class="js-bookmark-element" data-bookmark-id="${bookmark.id}">
+    <li tabindex="0" class="js-bookmark-element" data-bookmark-id="${bookmark.id}">
         <div class="bookmark-bar">
             <h3 class="bookmark-bar-title">${bookmark.title}</h3>
             <div class="bookmark-bar-rating">
@@ -32,7 +32,7 @@ const generateBookmarkElement = function (bookmark) {
             </div>
         </div>
         ${bookmarkExamine}
-    </div>`;
+    </li>`;
 };
 
 const generateBookmarkForm = function (bookmarks) {
@@ -56,9 +56,9 @@ const generateBookmarkForm = function (bookmarks) {
                 </select>
             </div>
         </div>
-        <div class="bookmark-container" id="js-bookmark-list">
+        <ul class="bookmark-container" id="js-bookmark-list">
             ${list}
-        </div>
+        </ul>
     </fieldset>
   `;
 };
